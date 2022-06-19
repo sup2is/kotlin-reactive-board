@@ -1,0 +1,7 @@
+spring:
+  profile: dev
+  config:
+    import: "optional:configserver:http://localhost:8090"
+  data:
+    mongodb:
+      uri: "mongodb://localhost:27017/board∂"
