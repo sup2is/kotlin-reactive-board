@@ -1,1 +1,5 @@
-rootProject.name = "demo"
+rootProject.name = "kotlin-reactive-board"
+include("api")
+include("config-server")
+include("domain")
+

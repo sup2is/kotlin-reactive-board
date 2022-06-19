@@ -1,4 +1,4 @@
-package me.sup2is.kotlinreactiveboard
+package me.sup2is.kotlinreactiveboard.api
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class KotlinReactiveBoardApplication
 
 fun main(args: Array<String>) {
-	runApplication<KotlinReactiveBoardApplication>(*args)
+    runApplication<KotlinReactiveBoardApplication>(*args)
 }
