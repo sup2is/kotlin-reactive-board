@@ -61,8 +61,6 @@ project(":api") {
         implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
         implementation("org.springframework.boot:spring-boot-starter-webflux")
     }
-
-    tasks.mainClasses { "ㅁㄴㅇㄹ" }
 }
 
 project(":config-server") {
@@ -70,8 +68,6 @@ project(":config-server") {
         implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
         implementation("org.springframework.boot:spring-boot-starter-webflux")
     }
-
-    tasks.mainClasses { "ㅁㄴㅇㄹ" }
 }
 
 project(":domain") {
@@ -79,8 +75,6 @@ project(":domain") {
         implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
         implementation("org.springframework.boot:spring-boot-starter-webflux")
     }
-
-    tasks.mainClasses { "ㅁㄴㅇㄹ" }
 }
 
 tasks.bootJar {
