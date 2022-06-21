@@ -58,6 +58,8 @@ dependencyManagement {
 
 project(":api") {
     dependencies {
+        implementation(project(":domain"))
+
         implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
         implementation("org.springframework.boot:spring-boot-starter-webflux")
     }
