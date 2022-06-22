@@ -1,7 +1,9 @@
 package me.sup2is.kotlinreactiveboard.api.service
 
 import me.sup2is.kotlinreactiveboard.api.controller.dto.BoardRequestDto
+import me.sup2is.kotlinreactiveboard.domain.model.Board
 import me.sup2is.kotlinreactiveboard.domain.repository.BoardRepository
+import me.sup2is.kotlinreactiveboard.domain.service.SequenceGenerator
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.any
@@ -21,6 +23,9 @@ internal class BoardServiceTest {
     @Mock
     lateinit var boardRepository: BoardRepository
 
+    @Mock
+    lateinit var sequenceGenerator: SequenceGenerator
+
     @Test
     fun `게시판 생성`() {
         // given
@@ -28,6 +33,9 @@ internal class BoardServiceTest {
 
         given(boardRepository.save(any()))
             .willReturn(Mono.just(boardRequestDto.toModel()))
+
+        given(sequenceGenerator.generateSequence(Board.SEQUENCE_NAME))
+            .willReturn(0)
 
         // when
         val create = boardService.create(boardRequestDto)

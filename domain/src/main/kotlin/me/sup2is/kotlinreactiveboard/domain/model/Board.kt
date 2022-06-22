@@ -14,4 +14,8 @@ class Board {
     var author: String = ""
     var createAt: LocalDateTime = LocalDateTime.now()
     var updateAt: LocalDateTime = LocalDateTime.now()
+
+    companion object {
+        const val SEQUENCE_NAME: String = "board_sequence"
+    }
 }
