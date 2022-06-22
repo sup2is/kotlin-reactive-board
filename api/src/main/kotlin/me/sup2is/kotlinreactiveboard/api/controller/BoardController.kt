@@ -1,6 +1,7 @@
 package me.sup2is.kotlinreactiveboard.api.controller
 
 import me.sup2is.kotlinreactiveboard.api.controller.dto.BoardRequestDto
+import me.sup2is.kotlinreactiveboard.api.controller.model.ApiResponse
 import me.sup2is.kotlinreactiveboard.api.service.BoardService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -16,11 +17,12 @@ class BoardController(
 ) {
 
     @PostMapping
-    fun create(@RequestBody boardRequestDto: BoardRequestDto) = boardService.create(boardRequestDto)
+    fun create(@RequestBody boardRequestDto: BoardRequestDto) =
+        boardService.create(boardRequestDto).map { ApiResponse(it) }
 
     @GetMapping("/{boardId}")
-    fun getOne(@PathVariable("boardId") boardId: Long) = boardService.get(boardId)
+    fun getOne(@PathVariable("boardId") boardId: Long) = boardService.get(boardId).map { ApiResponse(it) }
 
     @GetMapping
-    fun getAll() = boardService.getAll()
+    fun getAll() = boardService.getAll().map { ApiResponse(it) }
 }
