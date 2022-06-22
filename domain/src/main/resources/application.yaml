@@ -4,4 +4,4 @@ spring:
     import: "optional:configserver:http://localhost:8090"
   data:
     mongodb:
-      uri: "mongodb://localhost:27017/board∂"
+      uri: "mongodb://localhost:27017/board"

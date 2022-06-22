@@ -10,4 +10,8 @@ class BoardService(
 ) {
 
     fun create(boardRequestDto: BoardRequestDto) = boardRepository.save(boardRequestDto.toModel())
+
+    fun get(boardId: Long) = boardRepository.findById(boardId)
+
+    fun getAll() = boardRepository.findAll()
 }
