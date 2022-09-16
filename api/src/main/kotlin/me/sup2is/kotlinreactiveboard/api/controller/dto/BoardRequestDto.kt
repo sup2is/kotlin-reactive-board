@@ -13,3 +13,13 @@ data class BoardRequestDto(
         author = this@BoardRequestDto.author
     }
 }
+
+data class BoardUpdateDto(
+    val title: String,
+    val contents: String
+) {
+    fun toModel(): Board = Board().apply {
+        title = this@BoardUpdateDto.title
+        contents = this@BoardUpdateDto.contents
+    }
+}

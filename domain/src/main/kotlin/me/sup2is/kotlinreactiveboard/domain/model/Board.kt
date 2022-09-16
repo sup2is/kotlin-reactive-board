@@ -15,6 +15,15 @@ class Board {
     var createAt: LocalDateTime = LocalDateTime.now()
     var updateAt: LocalDateTime = LocalDateTime.now()
 
+    fun update(board: Board): Board {
+        return this.run {
+            this.title = board.title
+            this.contents = board.contents
+            this.updateAt = LocalDateTime.now()
+            this
+        }
+    }
+
     companion object {
         const val SEQUENCE_NAME: String = "board_sequence"
     }
