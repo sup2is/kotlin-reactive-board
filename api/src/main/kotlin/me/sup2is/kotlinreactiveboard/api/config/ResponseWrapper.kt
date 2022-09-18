@@ -1,7 +1,6 @@
 package me.sup2is.kotlinreactiveboard.api.config
 
 import me.sup2is.kotlinreactiveboard.api.controller.model.ApiResponse
-import org.springframework.core.MethodParameter
 import org.springframework.http.codec.HttpMessageWriter
 import org.springframework.web.reactive.HandlerResult
 import org.springframework.web.reactive.accept.RequestedContentTypeResolver
@@ -35,15 +34,8 @@ class ResponseWrapper(
             ApiResponse.failed(it.message).toMono()
         }
 
-        return writeBody(body, returnType, exchange)
-    }
+        val returnTypeSource = result.returnTypeSource
 
-    companion object {
-        @JvmStatic
-        private fun methodForReturnType(): Mono<ApiResponse<Any>>? = null
-
-        private val returnType: MethodParameter = MethodParameter(
-            ResponseWrapper::class.java.getDeclaredMethod("methodForReturnType"), -1
-        )
+        return writeBody(body, returnTypeSource, exchange)
     }
 }
