@@ -80,6 +80,15 @@ project(":domain") {
     }
 }
 
+project(":receiver") {
+    dependencies {
+        implementation(project(":domain"))
+
+        implementation("io.projectreactor.kafka:reactor-kafka:1.3.12")
+        implementation("org.springframework.boot:spring-boot-starter-webflux")
+    }
+}
+
 tasks.bootJar {
     enabled = false
 }

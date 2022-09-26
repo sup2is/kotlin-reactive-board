@@ -1,0 +1,6 @@
+spring:
+  profile: dev
+  config:
+    import: "optional:configserver:http://localhost:8090"
+  main:
+    webApplicationType: none
