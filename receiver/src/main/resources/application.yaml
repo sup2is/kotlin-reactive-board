@@ -4,3 +4,6 @@ spring:
     import: "optional:configserver:http://localhost:8090"
   main:
     webApplicationType: none
+kafka:
+  bootstrap-servers: localhost:9092
+  topic: "board-topic"
