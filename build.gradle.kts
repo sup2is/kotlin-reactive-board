@@ -88,6 +88,7 @@ project(":receiver") {
         implementation("org.springframework.boot:spring-boot-starter-webflux")
         implementation("org.springframework.boot:spring-boot-configuration-processor")
         implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+        testImplementation("org.springframework.kafka:spring-kafka-test")
     }
 }
 
