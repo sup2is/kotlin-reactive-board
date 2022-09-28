@@ -4,6 +4,10 @@ spring:
     import: "optional:configserver:http://localhost:8090"
   main:
     webApplicationType: none
+  data:
+    mongodb:
+      uri: "mongodb://localhost:27017/board"
+
 kafka:
   bootstrap-servers: localhost:9092
   topic: "board-topic"
