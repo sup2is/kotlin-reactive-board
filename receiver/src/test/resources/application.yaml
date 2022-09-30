@@ -1,8 +1,0 @@
-kafka:
-  bootstrap-servers: localhost:9093
-  topic: "my-test-topic"
-
-spring:
-  cloud:
-    config:
-      enabled: false
