@@ -92,6 +92,16 @@ project(":receiver") {
     }
 }
 
+project(":batch") {
+    dependencies {
+        implementation(project(":domain"))
+
+        implementation("org.springframework.boot:spring-boot-starter-batch")
+        implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+        implementation("mysql:mysql-connector-java:8.0.30")
+    }
+}
+
 tasks.bootJar {
     enabled = false
 }

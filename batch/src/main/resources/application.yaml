@@ -1,0 +1,16 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+  profile: dev
+  data:
+    mongodb:
+      uri: "mongodb://localhost:27017/board"
+  batch:
+    job:
+      enabled: false
+  datasource:
+    url: "jdbc:mysql://localhost:3306/board?autoReconnect=true"
+    username: root
+    password: admin
+    driver-class-name: com.mysql.jdbc.Driver
