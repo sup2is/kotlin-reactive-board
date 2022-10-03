@@ -1,4 +1,4 @@
-package me.sup2is.kotlinreactiveboard.batch.model
+package me.sup2is.kotlinreactiveboard.domain.model
 
 import me.sup2is.kotlinreactiveboard.domain.model.Board
 import org.springframework.data.annotation.Id
