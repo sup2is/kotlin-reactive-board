@@ -7,21 +7,20 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
 import org.springframework.context.annotation.Import
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate
-import reactor.kotlin.test.test
+import org.springframework.data.mongodb.core.MongoTemplate
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 
 @DataMongoTest
 @Import(SequenceGenerator::class)
-class BoardRepositoryTest {
+class BlockedBoardRepositoryTest {
 
     @Autowired
-    lateinit var boardRepository: BoardRepository
+    lateinit var blockedBoardRepository: BlockedBoardRepository
 
     @Autowired
-    lateinit var reactiveMongoTemplate: ReactiveMongoTemplate
+    lateinit var mongoTemplate: MongoTemplate
 
     @Autowired
     lateinit var sequenceGenerator: SequenceGenerator
@@ -35,23 +34,21 @@ class BoardRepositoryTest {
 
         val boards = listOf(board1, board2)
 
-        reactiveMongoTemplate.insertAll(boards)
-            .subscribe()
+        blockedBoardRepository.saveAll(boards)
 
         val targetDate = LocalDate.of(year, Month.MAY, 1)
         val fromDate = targetDate.withDayOfMonth(1).atStartOfDay().plusDays(1)
         val toDate = targetDate.withDayOfMonth(targetDate.lengthOfMonth()).atStartOfDay().plusDays(1)
 
-        // when & then
-        boardRepository.findByCreateAtBetween(fromDate, toDate)
-            .test()
-            .assertNext {
-                assertThat(it.createAt).isBetween(fromDate, toDate)
-            }.verifyComplete()
+        // when
+        val findBoards = blockedBoardRepository.findByCreateAtBetween(fromDate, toDate)
+
+        // then
+        assertThat(findBoards.size).isEqualTo(1)
 
         // teardown
-        boardRepository.deleteAll(boards)
-            .subscribe { println(it) }
+        blockedBoardRepository.deleteAll(boards)
+
 
     }
 
