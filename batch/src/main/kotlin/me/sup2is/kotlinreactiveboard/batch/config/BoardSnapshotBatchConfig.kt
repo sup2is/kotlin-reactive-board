@@ -7,36 +7,34 @@ import me.sup2is.kotlinreactiveboard.domain.repository.BoardSnapshotRepository
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory
+import org.springframework.batch.core.configuration.annotation.StepScope
 import org.springframework.batch.core.step.tasklet.TaskletStep
 import org.springframework.batch.item.ItemProcessor
+import org.springframework.batch.item.data.MongoItemReader
+import org.springframework.batch.item.data.MongoItemWriter
+import org.springframework.batch.item.data.builder.MongoItemWriterBuilder
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.query.Criteria
+import org.springframework.data.mongodb.core.query.Query
 import java.time.LocalDateTime
 
 @Configuration
 class BoardSnapshotBatchConfig(
     val jobBuilderFactory: JobBuilderFactory,
     val stepBuilderFactory: StepBuilderFactory,
-    val blockedBoardRepository: BlockedBoardRepository,
-    val boardSnapshotRepository: BoardSnapshotRepository
+    val mongoTemplate: MongoTemplate
 ) {
 
     @Bean
     fun boardSnapshotStep(): TaskletStep {
         return stepBuilderFactory.get("boardSnapshotStep")
-            .chunk<List<Board>, List<BoardSnapshot>>(5)
-            .reader {
-                val currentDate = LocalDateTime.now().toLocalDate()
-                val fromDate = currentDate.withDayOfMonth(1).atStartOfDay().plusDays(1)
-                val toDate = currentDate.withDayOfMonth(currentDate.lengthOfMonth()).atStartOfDay().plusDays(1)
-
-                blockedBoardRepository.findByCreateAtBetween(fromDate, toDate)
-            }.processor(boardSnapshotProcessor())
-            .writer {
-                it.forEach {
-                    boardSnapshotRepository.saveAll(it)
-                }
-            }
+            .chunk<Board, BoardSnapshot>(5)
+            .reader(boardSnapshotItemReader("", ""))
+            .processor(boardSnapshotProcessor())
+            .writer(boardSnapshotItemWriter())
             .build()
     }
 
@@ -47,13 +45,34 @@ class BoardSnapshotBatchConfig(
             .build()
     }
 
-    fun boardSnapshotProcessor(): ItemProcessor<List<Board>, List<BoardSnapshot>> {
-        return ItemProcessor<List<Board>, List<BoardSnapshot>> {
-            mutableListOf<BoardSnapshot>().apply {
-                it.forEach {
-                    this.add(BoardSnapshot(it))
-                }
-            }
+    @Bean
+    @StepScope
+    fun boardSnapshotItemReader(
+        @Value("#{jobParameters[fromDate]}") fromDate: String, // yyyymmdd
+        @Value("#{jobParameters[toDate]}") toDate: String // yyyymmdd
+    ): MongoItemReader<Board> {
+        return MongoItemReader<Board>().apply {
+            this.setTemplate(mongoTemplate)
+            this.setTargetType(Board::class.java)
+            this.setQuery(
+                Query(
+                    Criteria.where("createAt").lt(fromDate).gte(toDate)
+                )
+            )
+        }
+    }
+
+    @Bean
+    fun boardSnapshotItemWriter(): MongoItemWriter<BoardSnapshot> {
+        return MongoItemWriterBuilder<BoardSnapshot>()
+            .template(mongoTemplate)
+            .build()
+    }
+
+    @Bean
+    fun boardSnapshotProcessor(): ItemProcessor<Board, BoardSnapshot> {
+        return ItemProcessor {
+            BoardSnapshot(it)
         }
     }
 }

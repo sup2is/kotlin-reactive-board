@@ -4,6 +4,8 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
 import javax.sql.DataSource
 
 @TestConfiguration
@@ -12,10 +14,8 @@ class BatchTestConfig {
 
     @Bean
     fun dataSource(): DataSource {
-        return DataSourceBuilder.create()
-            .url("jdbc:h2:~/test")
-            .driverClassName("org.h2.Driver")
-            .username("sa")
+        return EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
+            .addScript("/org/springframework/batch/core/schema-h2.sql")
             .build()
     }
 }

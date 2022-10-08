@@ -9,6 +9,7 @@ spring:
   batch:
     job:
       enabled: false
+    initialize-schema: always
   datasource:
     url: "jdbc:mysql://localhost:3306/board?autoReconnect=true"
     username: root
