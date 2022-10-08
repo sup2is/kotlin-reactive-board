@@ -2,8 +2,6 @@ package me.sup2is.kotlinreactiveboard.batch.config
 
 import me.sup2is.kotlinreactiveboard.domain.model.Board
 import me.sup2is.kotlinreactiveboard.domain.model.BoardSnapshot
-import me.sup2is.kotlinreactiveboard.domain.repository.BlockedBoardRepository
-import me.sup2is.kotlinreactiveboard.domain.repository.BoardSnapshotRepository
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory
@@ -19,7 +17,13 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
-import java.time.LocalDateTime
+import java.time.LocalDate
+import java.time.YearMonth
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+
+val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMM")
 
 @Configuration
 class BoardSnapshotBatchConfig(
@@ -32,7 +36,7 @@ class BoardSnapshotBatchConfig(
     fun boardSnapshotStep(): TaskletStep {
         return stepBuilderFactory.get("boardSnapshotStep")
             .chunk<Board, BoardSnapshot>(5)
-            .reader(boardSnapshotItemReader("", ""))
+            .reader(boardSnapshotItemReader(""))
             .processor(boardSnapshotProcessor())
             .writer(boardSnapshotItemWriter())
             .build()
@@ -48,15 +52,23 @@ class BoardSnapshotBatchConfig(
     @Bean
     @StepScope
     fun boardSnapshotItemReader(
-        @Value("#{jobParameters[fromDate]}") fromDate: String, // yyyymmdd
-        @Value("#{jobParameters[toDate]}") toDate: String // yyyymmdd
+        @Value("#{jobParameters[targetDate]}") targetDate: String, // yyyyMM
     ): MongoItemReader<Board> {
+
+        val yearMonth = YearMonth.parse(targetDate, dateTimeFormatter)
+
+        val from = yearMonth.atDay(1)
+            .atStartOfDay()
+            .toInstant(ZoneOffset.UTC)
+        val to = yearMonth.atEndOfMonth()
+            .atStartOfDay()
+            .toInstant(ZoneOffset.UTC)
         return MongoItemReader<Board>().apply {
             this.setTemplate(mongoTemplate)
             this.setTargetType(Board::class.java)
             this.setQuery(
                 Query(
-                    Criteria.where("createAt").lt(fromDate).gte(toDate)
+                    Criteria.where("createAt").gte(from).lt(to)
                 )
             )
         }
