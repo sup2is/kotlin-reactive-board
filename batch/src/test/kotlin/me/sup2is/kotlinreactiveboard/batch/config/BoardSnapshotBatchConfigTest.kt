@@ -1,5 +1,6 @@
 package me.sup2is.kotlinreactiveboard.batch.config
 
+import me.sup2is.kotlinreactiveboard.batch.listener.JobCompletionNotificationListener
 import me.sup2is.kotlinreactiveboard.domain.model.Board
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -20,7 +21,7 @@ import java.time.YearMonth
 @ActiveProfiles("dev")
 @SpringBatchTest
 @ContextConfiguration(classes = [BoardSnapshotBatchConfig::class])
-@Import(BatchTestConfig::class)
+@Import(BatchTestConfig::class, JobCompletionNotificationListener::class)
 @DataMongoTest
 @EnableAutoConfiguration
 class BoardSnapshotBatchConfigTest {

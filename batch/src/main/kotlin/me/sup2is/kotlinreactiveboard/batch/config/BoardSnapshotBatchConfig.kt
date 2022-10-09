@@ -1,5 +1,6 @@
 package me.sup2is.kotlinreactiveboard.batch.config
 
+import me.sup2is.kotlinreactiveboard.batch.listener.JobCompletionNotificationListener
 import me.sup2is.kotlinreactiveboard.domain.model.Board
 import me.sup2is.kotlinreactiveboard.domain.model.BoardSnapshot
 import org.springframework.batch.core.Job
@@ -29,7 +30,8 @@ val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMM")
 class BoardSnapshotBatchConfig(
     val jobBuilderFactory: JobBuilderFactory,
     val stepBuilderFactory: StepBuilderFactory,
-    val mongoTemplate: MongoTemplate
+    val mongoTemplate: MongoTemplate,
+    val jobCompletionNotificationListener: JobCompletionNotificationListener
 ) {
 
     @Bean
@@ -46,6 +48,7 @@ class BoardSnapshotBatchConfig(
     fun boardSnapshotJob(): Job {
         return jobBuilderFactory.get("boardSnapshotJob")
             .start(boardSnapshotStep())
+            .listener(jobCompletionNotificationListener)
             .build()
     }
 
